@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ChasquiX - Sistema de Taxi Móvil</title>
-    <script src="https://cdn.amplitude.com/script/639a01dc563e6c2c5d0597792da20f29.js"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));window.amplitude.init('639a01dc563e6c2c5d0597792da20f29', {"fetchRemoteConfig":true,"autocapture":true});</script>
+    <script src="https://cdn.amplitude.com/script/639a01dc563e6c2c5d0597792da20f29.js"></script>
+    <script>window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 })); window.amplitude.init('639a01dc563e6c2c5d0597792da20f29', { "fetchRemoteConfig": true, "autocapture": true });</script>
 
     <!-- Mapbox CSS -->
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
     <!-- Mapbox Geocoder CSS -->
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+        type="text/css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- SweetAlert2 -->
@@ -45,7 +48,7 @@
 
         .sidebar {
             position: absolute;
-            top: 0;
+            top: 40px;
             left: 0;
             width: 100%;
             height: 100%;
@@ -142,7 +145,7 @@
 
         .connected {
             background: #d4edda;
-            color: #155724;
+            color: #52b8d2;
         }
 
         .disconnected {
@@ -393,7 +396,7 @@
 
         .notification {
             position: fixed;
-            top: 30px;
+            top: 50px;
             right: 20px;
             padding: 10px 15px;
             border-radius: 8px;
@@ -889,28 +892,30 @@
             color: #666;
             margin-top: 2px;
         }
-        @media (max-width: 700px) {
-  #onboardingTooltip {
-    width: 96vw !important;
-    max-width: 96vw !important;
-    left: 2vw !important;
-    right: 2vw !important;
-    font-size: 15px !important;
-    padding: 12px !important;
-  }
-  .onboarding-highlight {
-    box-shadow: 0 0 0 3px #764ba288 !important;
-    border-radius: 10px !important;
-  }
-}
 
-.onboarding-highlight {
-  box-shadow: 0 0 0 6px #764ba2cc, 0 8px 28px #3332;
-  z-index: 100001 !important;
-  position: relative !important;
-  border-radius: 14px !important;
-  transition: box-shadow 0.2s;
-}
+        @media (max-width: 700px) {
+            #onboardingTooltip {
+                width: 96vw !important;
+                max-width: 96vw !important;
+                left: 2vw !important;
+                right: 2vw !important;
+                font-size: 15px !important;
+                padding: 12px !important;
+            }
+
+            .onboarding-highlight {
+                box-shadow: 0 0 0 3px #764ba288 !important;
+                border-radius: 10px !important;
+            }
+        }
+
+        .onboarding-highlight {
+            box-shadow: 0 0 0 6px #764ba2cc, 0 8px 28px #3332;
+            z-index: 100001 !important;
+            position: relative !important;
+            border-radius: 14px !important;
+            transition: box-shadow 0.2s;
+        }
 
         /* Estilos para el modal de ubicación */
         .location-required-modal {
@@ -919,7 +924,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -929,17 +934,17 @@
             color: white;
             text-align: center;
         }
-        
+
         .location-required-modal h2 {
             font-size: 1.5rem;
             margin-bottom: 20px;
         }
-        
+
         .location-required-modal p {
             margin-bottom: 30px;
             font-size: 1.1rem;
         }
-        
+
         .location-required-modal button {
             background: #764ba2;
             color: white;
@@ -955,19 +960,19 @@
             .map-container {
                 padding-top: max(env(safe-area-inset-top), 15px);
             }
-            
+
             .sidebar {
                 padding-top: max(env(safe-area-inset-top), 15px);
                 padding-bottom: max(env(safe-area-inset-bottom), 15px);
             }
-            
+
             .fab-container {
                 bottom: max(env(safe-area-inset-bottom), 20px);
                 right: max(env(safe-area-inset-right), 20px);
             }
-            
+
             .panel-toggle {
-                top: max(env(safe-area-inset-top), 15px);
+                top: max( 30px);
             }
         }
 
@@ -976,7 +981,7 @@
             top: max(env(safe-area-inset-top), 10px);
             left: max(env(safe-area-inset-left), 10px);
         }
-        
+
         .mapboxgl-ctrl-top-right {
             top: max(env(safe-area-inset-top), 10px);
             right: max(env(safe-area-inset-right), 10px);
@@ -1024,7 +1029,8 @@
                         <div class="destination-name" id="destinationName"></div>
                         <div class="destination-address" id="destinationAddress"></div>
                     </div>
-                    <button type="button" class="btn btn-secondary" onclick="clearDestination()" style="margin-top: 8px; padding: 4px 8px; font-size: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="clearDestination()"
+                        style="margin-top: 8px; padding: 4px 8px; font-size: 12px;">
                         Cambiar Destino
                     </button>
                 </div>
@@ -1033,13 +1039,11 @@
                 <div class="destination-search">
                     <label>Buscar Destino:</label>
                     <div class="search-container">
-                        <input type="text"
-                               id="destinationSearch"
-                               class="search-input"
-                               placeholder="Buscar lugar en Tingo María..."
-                               autocomplete="off">
+                        <input type="text" id="destinationSearch" class="search-input"
+                            placeholder="Buscar lugar en Tingo María..." autocomplete="off">
                         <i class="fas fa-search search-icon"></i>
-                        <button type="button" class="clear-destination" id="clearDestinationBtn" onclick="clearDestination()">
+                        <button type="button" class="clear-destination" id="clearDestinationBtn"
+                            onclick="clearDestination()">
                             <i class="fas fa-times"></i>
                         </button>
                         <div id="searchResults" class="search-results"></div>
@@ -1052,7 +1056,8 @@
 
                 <div class="form-group">
                     <label for="destination">Detalles del destino:</label>
-                    <textarea id="destination" rows="2" placeholder="Referencia adicional (ej: frente al mercado)"></textarea>
+                    <textarea id="destination" rows="2"
+                        placeholder="Referencia adicional (ej: frente al mercado)"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -1165,7 +1170,8 @@
     <!-- Mapbox JS -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
     <!-- Mapbox Geocoder JS -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <!-- MQTT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <!-- SweetAlert2 -->
@@ -1223,10 +1229,10 @@
             initMQTT();
             initEventListeners();
             initDestinationSearch();
-            
+
             // Obtener ubicación al cargar (sin fallback)
             getUserLocation(true); // true = mostrar modal si falla
-            
+
             updateUI();
             updateFABs();
         });
@@ -1313,36 +1319,36 @@
                         // Ubicación obtenida con éxito
                         locationModal.style.display = 'none';
                         clearInterval(locationRetryInterval);
-                        
+
                         // Crear el mapa si no existe
                         if (!map) {
                             createMap(position.coords.longitude, position.coords.latitude);
                         }
-                        
+
                         updateLocation(position.coords.latitude, position.coords.longitude);
 
                         if (currentUser.type === 'client') {
                             showNotification('Ubicación actualizada. Ahora selecciona tu destino.', 'info');
                             updateFABs();
                         }
-                        
+
                         // Iniciar seguimiento continuo
                         startLocationTracking();
                     },
                     function (error) {
                         // Error al obtener ubicación
                         console.error('Error obteniendo ubicación:', error);
-                        
+
                         if (showModalOnError) {
                             locationModal.style.display = 'flex';
-                            
+
                             // Configurar reintento automático cada 5 segundos
                             clearInterval(locationRetryInterval);
                             locationRetryInterval = setInterval(() => {
                                 getUserLocation(false);
                             }, 5000);
                         }
-                        
+
                         // Mostrar SweetAlert con instrucciones
                         Swal.fire({
                             title: 'Ubicación Requerida',
@@ -1393,7 +1399,7 @@
 
             // Agregar controles de navegación con posición ajustada
             map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-            
+
             // Evento para hacer clic en el mapa
             map.on('click', function (e) {
                 if (selectingDestination) {
@@ -1402,7 +1408,7 @@
             });
 
             // Ajustar el mapa para que respete el safe area después de cargar
-            map.on('load', function() {
+            map.on('load', function () {
                 setTimeout(() => {
                     map.resize();
                 }, 100);
@@ -1410,7 +1416,7 @@
         }
 
         // Reintentar obtener ubicación
-        retryLocationBtn.addEventListener('click', function() {
+        retryLocationBtn.addEventListener('click', function () {
             getUserLocation(true);
         });
 
@@ -1444,7 +1450,7 @@
             const searchInput = document.getElementById('destinationSearch');
             const searchResults = document.getElementById('searchResults');
 
-            searchInput.addEventListener('input', function(e) {
+            searchInput.addEventListener('input', function (e) {
                 const query = e.target.value.trim();
 
                 // Limpiar timeout anterior
@@ -1464,7 +1470,7 @@
             });
 
             // Cerrar resultados al hacer clic fuera
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!e.target.closest('.search-container')) {
                     hideSearchResults();
                 }
@@ -3153,189 +3159,189 @@
 
         // Pasos de onboarding para mobile, textos breves
         const onboardingStepsByType = {
-          client: [
-            {
-              target: '#userTypeSelect',
-              text: 'Selecciona aquí si eres <b>Cliente</b> para pedir taxi o <b>Mototaxista</b> para ofrecer servicio.',
-              align: 'bottom'
-            },
-            {
-              target: '#destinationSearch',
-              text: 'Busca tu destino o toca el mapa para seleccionarlo.',
-              align: 'bottom'
-            },
-            {
-              target: '#fabMain',
-              text: 'Usa este botón para iniciar o cancelar tu solicitud.',
-              align: 'left'
-            },
-            {
-              target: '#routeInfo',
-              text: 'Aquí verás distancia y tiempo estimado de tu viaje.',
-              align: 'bottom'
-            },
-            {
-              target: '#requestsList',
-              text: 'Aquí verás actividad y mototaxistas disponibles.',
-              align: 'bottom'
-            },
-            {
-              target: '#chatContainer',
-              text: 'Cuando tu viaje esté activo, chatea con el conductor aquí.',
-              align: 'bottom'
-            }
-          ],
-          driver: [
-            {
-              target: '#userTypeSelect',
-              text: 'Selecciona <b>Mototaxista</b> para recibir viajes.',
-              align: 'bottom'
-            },
-            {
-              target: '#fabMain',
-              text: 'Activa tu disponibilidad para empezar a recibir pedidos.',
-              align: 'left'
-            },
-            {
-              target: '#requestsList',
-              text: 'Aquí ves los clientes que solicitan taxi cerca.',
-              align: 'bottom'
-            },
-            {
-              target: '#chatContainer',
-              text: 'Cuando tomes un viaje, chatea con el cliente aquí.',
-              align: 'bottom'
-            }
-          ]
+            client: [
+                {
+                    target: '#userTypeSelect',
+                    text: 'Selecciona aquí si eres <b>Cliente</b> para pedir taxi o <b>Mototaxista</b> para ofrecer servicio.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#destinationSearch',
+                    text: 'Busca tu destino o toca el mapa para seleccionarlo.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#fabMain',
+                    text: 'Usa este botón para iniciar o cancelar tu solicitud.',
+                    align: 'left'
+                },
+                {
+                    target: '#routeInfo',
+                    text: 'Aquí verás distancia y tiempo estimado de tu viaje.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#requestsList',
+                    text: 'Aquí verás actividad y mototaxistas disponibles.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#chatContainer',
+                    text: 'Cuando tu viaje esté activo, chatea con el conductor aquí.',
+                    align: 'bottom'
+                }
+            ],
+            driver: [
+                {
+                    target: '#userTypeSelect',
+                    text: 'Selecciona <b>Mototaxista</b> para recibir viajes.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#fabMain',
+                    text: 'Activa tu disponibilidad para empezar a recibir pedidos.',
+                    align: 'left'
+                },
+                {
+                    target: '#requestsList',
+                    text: 'Aquí ves los clientes que solicitan taxi cerca.',
+                    align: 'bottom'
+                },
+                {
+                    target: '#chatContainer',
+                    text: 'Cuando tomes un viaje, chatea con el cliente aquí.',
+                    align: 'bottom'
+                }
+            ]
         };
 
         let onboardingStep = 0;
         let onboardingType = 'client';
 
         function startOnboarding(role) {
-          onboardingType = role || (document.getElementById('userTypeSelect')?.value || 'client');
-          onboardingStep = 0;
-          document.getElementById('onboardingOverlay').style.display = 'block';
-          showOnboardingStep(onboardingStep);
-          document.body.style.overflow = 'hidden';
+            onboardingType = role || (document.getElementById('userTypeSelect')?.value || 'client');
+            onboardingStep = 0;
+            document.getElementById('onboardingOverlay').style.display = 'block';
+            showOnboardingStep(onboardingStep);
+            document.body.style.overflow = 'hidden';
         }
 
         function showOnboardingStep(index) {
-          const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
-          if (!steps[index]) return closeOnboarding();
+            const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
+            if (!steps[index]) return closeOnboarding();
 
-          // Remove highlight
-          document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
-          // Hide arrow by default
-          document.getElementById('onboardingArrow').style.display = 'none';
+            // Remove highlight
+            document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
+            // Hide arrow by default
+            document.getElementById('onboardingArrow').style.display = 'none';
 
-          const step = steps[index];
-          const target = document.querySelector(step.target);
-          if (!target) return nextOnboardingStep(); // Si no existe, salta
+            const step = steps[index];
+            const target = document.querySelector(step.target);
+            if (!target) return nextOnboardingStep(); // Si no existe, salta
 
-          // Highlight target
-          target.classList.add('onboarding-highlight');
-          // Si el elemento está fuera del viewport, haz scroll
-          const rect = target.getBoundingClientRect();
-          const absTop = window.scrollY + rect.top;
-          if (absTop < window.scrollY || absTop + rect.height > window.scrollY + window.innerHeight) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
+            // Highlight target
+            target.classList.add('onboarding-highlight');
+            // Si el elemento está fuera del viewport, haz scroll
+            const rect = target.getBoundingClientRect();
+            const absTop = window.scrollY + rect.top;
+            if (absTop < window.scrollY || absTop + rect.height > window.scrollY + window.innerHeight) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
 
-          // Tooltip
-          const tooltip = document.getElementById('onboardingTooltip');
-          let top = window.scrollY + rect.top, left = window.scrollX + rect.left;
-          let isMobile = window.innerWidth < 700;
-          let arrow = document.getElementById('onboardingArrow');
+            // Tooltip
+            const tooltip = document.getElementById('onboardingTooltip');
+            let top = window.scrollY + rect.top, left = window.scrollX + rect.left;
+            let isMobile = window.innerWidth < 700;
+            let arrow = document.getElementById('onboardingArrow');
 
-          // Colocación inteligente
-          if (isMobile) {
-            tooltip.style.left = '2vw';
-            tooltip.style.right = '2vw';
-            tooltip.style.width = '96vw';
-            tooltip.style.maxWidth = '96vw';
-          }
+            // Colocación inteligente
+            if (isMobile) {
+                tooltip.style.left = '2vw';
+                tooltip.style.right = '2vw';
+                tooltip.style.width = '96vw';
+                tooltip.style.maxWidth = '96vw';
+            }
 
-          // Según alineación
-          let arrowX = '50%', arrowY = 0;
-          if (step.align === 'bottom') {
-            top += rect.height + 18;
-            arrow.style.top = '-26px';
-            arrow.style.display = 'block';
-          } else if (step.align === 'top') {
-            top -= tooltip.offsetHeight + 26;
-            arrow.style.top = tooltip.offsetHeight + 'px';
-            arrow.style.display = 'block';
-          } else if (step.align === 'right') {
-            left += rect.width + 10;
-            arrow.style.display = 'none';
-          } else if (step.align === 'left') {
-            left -= (isMobile ? 0 : 340);
-            arrow.style.display = 'none';
-          }
+            // Según alineación
+            let arrowX = '50%', arrowY = 0;
+            if (step.align === 'bottom') {
+                top += rect.height + 18;
+                arrow.style.top = '-26px';
+                arrow.style.display = 'block';
+            } else if (step.align === 'top') {
+                top -= tooltip.offsetHeight + 26;
+                arrow.style.top = tooltip.offsetHeight + 'px';
+                arrow.style.display = 'block';
+            } else if (step.align === 'right') {
+                left += rect.width + 10;
+                arrow.style.display = 'none';
+            } else if (step.align === 'left') {
+                left -= (isMobile ? 0 : 340);
+                arrow.style.display = 'none';
+            }
 
-          // Centrado si fuera de la vista
-          if (top + tooltip.offsetHeight > window.scrollY + window.innerHeight - 40) {
-            top = window.scrollY + window.innerHeight - tooltip.offsetHeight - 24;
-            arrow.style.display = 'none';
-          }
-          if (top < window.scrollY + 10) {
-            top = window.scrollY + 20;
-            arrow.style.display = 'none';
-          }
-          if (left < 10) left = 10;
+            // Centrado si fuera de la vista
+            if (top + tooltip.offsetHeight > window.scrollY + window.innerHeight - 40) {
+                top = window.scrollY + window.innerHeight - tooltip.offsetHeight - 24;
+                arrow.style.display = 'none';
+            }
+            if (top < window.scrollY + 10) {
+                top = window.scrollY + 20;
+                arrow.style.display = 'none';
+            }
+            if (left < 10) left = 10;
 
-          tooltip.style.top = `${top}px`;
-          tooltip.style.left = `${left}px`;
-          tooltip.querySelector('#onboardingStepContent').innerHTML = step.text;
+            tooltip.style.top = `${top}px`;
+            tooltip.style.left = `${left}px`;
+            tooltip.querySelector('#onboardingStepContent').innerHTML = step.text;
 
-          // Muestra la flecha solo si está debajo
-          if (step.align === 'bottom' && !isMobile) {
-            arrow.style.display = 'block';
-            arrow.style.top = '-26px';
-          } else {
-            arrow.style.display = 'none';
-          }
+            // Muestra la flecha solo si está debajo
+            if (step.align === 'bottom' && !isMobile) {
+                arrow.style.display = 'block';
+                arrow.style.top = '-26px';
+            } else {
+                arrow.style.display = 'none';
+            }
 
-          // Botones prev/sig
-          document.getElementById('onboardingPrevBtn').style.display = (index > 0) ? 'inline-block' : 'none';
-          document.getElementById('onboardingNextBtn').textContent = (index === steps.length - 1) ? 'Finalizar' : 'Siguiente';
+            // Botones prev/sig
+            document.getElementById('onboardingPrevBtn').style.display = (index > 0) ? 'inline-block' : 'none';
+            document.getElementById('onboardingNextBtn').textContent = (index === steps.length - 1) ? 'Finalizar' : 'Siguiente';
 
-          onboardingStep = index;
+            onboardingStep = index;
         }
 
         function nextOnboardingStep() {
-          const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
-          if (onboardingStep + 1 < steps.length) {
-            showOnboardingStep(onboardingStep + 1);
-          } else {
-            closeOnboarding();
-          }
+            const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
+            if (onboardingStep + 1 < steps.length) {
+                showOnboardingStep(onboardingStep + 1);
+            } else {
+                closeOnboarding();
+            }
         }
 
         function prevOnboardingStep() {
-          if (onboardingStep > 0) showOnboardingStep(onboardingStep - 1);
+            if (onboardingStep > 0) showOnboardingStep(onboardingStep - 1);
         }
 
         function closeOnboarding() {
-          document.getElementById('onboardingOverlay').style.display = 'none';
-          document.body.style.overflow = '';
-          document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
-          localStorage.setItem('chasquix_onboarded', 'yes');
+            document.getElementById('onboardingOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+            document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
+            localStorage.setItem('chasquix_onboarded', 'yes');
         }
 
         // Cambia el onboarding si cambia de rol
-        document.getElementById('userTypeSelect').addEventListener('change', function() {
-          if (localStorage.getItem('chasquix_onboarded') !== 'yes') {
-            setTimeout(() => startOnboarding(this.value), 200);
-          }
+        document.getElementById('userTypeSelect').addEventListener('change', function () {
+            if (localStorage.getItem('chasquix_onboarded') !== 'yes') {
+                setTimeout(() => startOnboarding(this.value), 200);
+            }
         });
 
         // Solo la primera vez
         window.addEventListener('DOMContentLoaded', () => {
-          if (!localStorage.getItem('chasquix_onboarded')) {
-            setTimeout(() => startOnboarding(document.getElementById('userTypeSelect')?.value), 1200);
-          }
+            if (!localStorage.getItem('chasquix_onboarded')) {
+                setTimeout(() => startOnboarding(document.getElementById('userTypeSelect')?.value), 1200);
+            }
         });
     </script>
 </body>
