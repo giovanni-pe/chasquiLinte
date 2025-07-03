@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ChasquiX - Sistema de Taxi Móvil</title>
-     <script src="https://cdn.amplitude.com/script/639a01dc563e6c2c5d0597792da20f29.js"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));window.amplitude.init('639a01dc563e6c2c5d0597792da20f29', {"fetchRemoteConfig":true,"autocapture":true});</script>
+    <script src="https://cdn.amplitude.com/script/639a01dc563e6c2c5d0597792da20f29.js"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));window.amplitude.init('639a01dc563e6c2c5d0597792da20f29', {"fetchRemoteConfig":true,"autocapture":true});</script>
 
     <!-- Mapbox CSS -->
     <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         * {
             margin: 0;
@@ -22,27 +24,28 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4bb9e4 0%, #28b8dc 100%);
             color: #333;
             height: 100vh;
             overflow: hidden;
-            /* Ajustar padding superior para compensar la barra de estado */
-            padding-top: 25px;
-            /* Alternativa: usar safe-area para dispositivos modernos */
-            padding-top: env(safe-area-inset-top, 25px);
+            /* Safe area para dispositivos con notch */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         .container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            padding-top: 25px;
-            padding-top: env(safe-area-inset-top, 25px);
+            height: 100%;
+            width: 100%;
+            position: relative;
         }
 
         .sidebar {
             position: absolute;
-            top: 20px;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -54,7 +57,11 @@
             transform: translateY(100%);
             transition: transform 0.3s ease;
             z-index: 1000;
-            padding-top: 25px;
+            /* Safe area para dispositivos con notch */
+            padding-top: calc(15px + env(safe-area-inset-top));
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            padding-left: calc(15px + env(safe-area-inset-left));
+            padding-right: calc(15px + env(safe-area-inset-right));
         }
 
         .sidebar.active {
@@ -66,11 +73,16 @@
             position: relative;
             width: 100%;
             height: 100%;
+            /* Safe area para dispositivos con notch */
+            padding-top: env(safe-area-inset-top);
         }
 
         #map {
             height: 100%;
             width: 100%;
+            /* Asegurar que el mapa respete las áreas seguras */
+            margin-top: env(safe-area-inset-top);
+            margin-bottom: env(safe-area-inset-bottom);
         }
 
         .header {
@@ -79,9 +91,9 @@
         }
 
         .header h1 {
-            color: #764ba2;
+            color: #4ba29c;
             font-size: 20px;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
         }
 
         .header p {
@@ -115,7 +127,7 @@
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 15px;
-            border-left: 4px solid #764ba2;
+            border-left: 4px solid #68ebe9;
             font-size: 13px;
         }
 
@@ -148,7 +160,7 @@
 
         .request-form h3 {
             margin-bottom: 12px;
-            color: #764ba2;
+            color: #63dde5;
             font-size: 16px;
         }
 
@@ -199,7 +211,7 @@
         }
 
         .search-input:focus {
-            border-color: #764ba2;
+            border-color: #359fc9;
         }
 
         .search-icon {
@@ -441,10 +453,10 @@
         /* Estilos para el chat */
         .chat-container {
             position: fixed;
-            bottom: 60px;
-            right: 15px;
+            bottom: 300px;
+            right: 40px;
             width: 90%;
-            height: 60vh;
+            height: 40vh;
             background: white;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
@@ -458,7 +470,7 @@
         }
 
         .chat-header {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #32bcf3, #82dddd);
             color: white;
             padding: 12px;
             border-radius: 10px 10px 0 0;
@@ -900,6 +912,75 @@
   transition: box-shadow 0.2s;
 }
 
+        /* Estilos para el modal de ubicación */
+        .location-required-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .location-required-modal h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .location-required-modal p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .location-required-modal button {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* Ajustes para dispositivos con notch */
+        @supports (padding: max(0px)) {
+            .map-container {
+                padding-top: max(env(safe-area-inset-top), 15px);
+            }
+            
+            .sidebar {
+                padding-top: max(env(safe-area-inset-top), 15px);
+                padding-bottom: max(env(safe-area-inset-bottom), 15px);
+            }
+            
+            .fab-container {
+                bottom: max(env(safe-area-inset-bottom), 20px);
+                right: max(env(safe-area-inset-right), 20px);
+            }
+            
+            .panel-toggle {
+                top: max(env(safe-area-inset-top), 15px);
+            }
+        }
+
+        /* Asegurar que los controles de mapa respeten el safe area */
+        .mapboxgl-ctrl-top-left {
+            top: max(env(safe-area-inset-top), 10px);
+            left: max(env(safe-area-inset-left), 10px);
+        }
+        
+        .mapboxgl-ctrl-top-right {
+            top: max(env(safe-area-inset-top), 10px);
+            right: max(env(safe-area-inset-right), 10px);
+        }
     </style>
 </head>
 
@@ -1072,19 +1153,14 @@
             </div>
         </div>
     </div>
-    <div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.45);">
-  <div id="onboardingTooltip" style="position:absolute;max-width:90vw;width:320px;background:#fff;color:#333;border-radius:14px;box-shadow:0 8px 24px #0002;padding:18px;z-index:100000;transition:top .25s,left .25s;">
-    <div id="onboardingArrow" style="width:26px;height:26px;display:none;position:absolute;left:50%;transform:translateX(-50%);z-index:100001;">
-      <svg width="26" height="26"><polygon points="13,0 26,26 0,26" fill="#fff" stroke="#bbb" stroke-width="1"/></svg>
+
+    <!-- Modal para requerir ubicación -->
+    <div id="locationRequiredModal" class="location-required-modal" style="display: none;">
+        <h2>📍 Ubicación Requerida</h2>
+        <p>Para usar ChasquiX necesitamos acceder a tu ubicación actual.</p>
+        <p>Por favor habilita los permisos de ubicación en tu dispositivo.</p>
+        <button id="retryLocationBtn">Intentar nuevamente</button>
     </div>
-    <div id="onboardingStepContent" style="font-size:15px;line-height:1.6;margin-bottom:10px"></div>
-    <div id="onboardingControls" style="text-align:center;">
-      <button id="onboardingPrevBtn" onclick="prevOnboardingStep()" style="background:#eee;border:none;border-radius:6px;padding:12px 22px;cursor:pointer;color:#666;margin-right:8px;display:none;font-size:16px;">⟵</button>
-      <button id="onboardingNextBtn" onclick="nextOnboardingStep()" style="background:linear-gradient(45deg,#667eea,#764ba2);color:white;border:none;border-radius:6px;padding:12px 28px;cursor:pointer;font-size:16px;">Siguiente</button>
-      <button onclick="closeOnboarding()" style="background:none;border:none;padding:12px;color:#888;font-size:18px;margin-left:8px;">Omitir</button>
-    </div>
-  </div>
-</div>
 
     <!-- Mapbox JS -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
@@ -1092,6 +1168,8 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <!-- MQTT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Token de Mapbox
         mapboxgl.accessToken = 'pk.eyJ1IjoidGVsbG8tNjkiLCJhIjoiY21ianVwaWhkMDU2NTJsb2s4OGttZ3NhYSJ9.sZirrZDCxooouLCPy_DJAQ';
@@ -1133,6 +1211,11 @@
         let unreadMessages = 0;
         let fabMenuOpen = false;
         let searchTimeout = null;
+        let locationRetryInterval = null;
+
+        // Modal de ubicación
+        const locationModal = document.getElementById('locationRequiredModal');
+        const retryLocationBtn = document.getElementById('retryLocationBtn');
 
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function () {
@@ -1140,28 +1223,177 @@
             initMQTT();
             initEventListeners();
             initDestinationSearch();
-            getUserLocation();
+            
+            // Obtener ubicación al cargar (sin fallback)
+            getUserLocation(true); // true = mostrar modal si falla
+            
             updateUI();
             updateFABs();
         });
 
-        // Inicializar el mapa con Mapbox
+        // Inicializar el mapa solo cuando tengamos ubicación
         function initMap() {
-            // Coordenadas de Tingo María, Perú
-            const tingoMaria = [-76.0073, -9.2945]; // [lng, lat] para Mapbox
+            // No crear el mapa hasta tener ubicación
+            // Se llamará desde updateLocation cuando tengamos coordenadas
+        }
 
+        // Inicializar MQTT
+        function initMQTT() {
+            // Configuración mejorada para WSS
+            const clientId = currentUser.id || 'webclient_' + Math.random().toString(16).substr(2, 8);
+            const path = ''; // Ruta vacía (Mosquitto no usa /mqtt)
+            const timeout = 10; // Tiempo de espera en segundos
+
+            console.log(`Intentando conexión MQTT a: wss://${MQTT_CONFIG.host}:${MQTT_CONFIG.port}${path}`);
+
+            mqttClient = new Paho.MQTT.Client(
+                MQTT_CONFIG.host,
+                MQTT_CONFIG.port,
+                path,
+                clientId
+            );
+
+            // Manejadores de eventos mejorados
+            mqttClient.onConnectionLost = function (response) {
+                console.error('Conexión MQTT perdida. Código:', response.errorCode, 'Razón:', response.errorMessage);
+                updateConnectionStatus(false);
+
+                // Reintento con backoff exponencial
+                const delay = Math.min(30000, 5000 * Math.pow(2, reconnectAttempts));
+                console.log(`Reintentando en ${delay / 1000} segundos...`);
+                setTimeout(initMQTT, delay);
+                reconnectAttempts++;
+            };
+
+            mqttClient.onMessageArrived = function (message) {
+                try {
+                    console.debug('Mensaje recibido:', message.destinationName, message.payloadString);
+                    handleMQTTMessage(message);
+                } catch (e) {
+                    console.error('Error procesando mensaje:', e);
+                }
+            };
+
+            // Opciones de conexión mejoradas
+            const connectOptions = {
+                timeout: timeout,
+                keepAliveInterval: 60,
+                cleanSession: true,
+                useSSL: true, // Obligatorio para WSS
+                onSuccess: function () {
+                    console.log('Conexión MQTT establecida con éxito');
+                    updateConnectionStatus(true);
+                    reconnectAttempts = 0;
+                    subscribeToTopics();
+                },
+                onFailure: function (error) {
+                    console.error('Error de conexión. Código:', error.errorCode, 'Error:', error.errorMessage);
+                    updateConnectionStatus(false);
+
+                    const delay = Math.min(30000, 5000 * Math.pow(2, reconnectAttempts));
+                    setTimeout(initMQTT, delay);
+                    reconnectAttempts++;
+                },
+
+            };
+
+            try {
+                mqttClient.connect(connectOptions);
+            } catch (e) {
+                console.error('Excepción al conectar:', e);
+                setTimeout(initMQTT, 5000);
+            }
+        }
+
+        // Obtener ubicación del usuario (sin fallback)
+        function getUserLocation(showModalOnError = false) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        // Ubicación obtenida con éxito
+                        locationModal.style.display = 'none';
+                        clearInterval(locationRetryInterval);
+                        
+                        // Crear el mapa si no existe
+                        if (!map) {
+                            createMap(position.coords.longitude, position.coords.latitude);
+                        }
+                        
+                        updateLocation(position.coords.latitude, position.coords.longitude);
+
+                        if (currentUser.type === 'client') {
+                            showNotification('Ubicación actualizada. Ahora selecciona tu destino.', 'info');
+                            updateFABs();
+                        }
+                        
+                        // Iniciar seguimiento continuo
+                        startLocationTracking();
+                    },
+                    function (error) {
+                        // Error al obtener ubicación
+                        console.error('Error obteniendo ubicación:', error);
+                        
+                        if (showModalOnError) {
+                            locationModal.style.display = 'flex';
+                            
+                            // Configurar reintento automático cada 5 segundos
+                            clearInterval(locationRetryInterval);
+                            locationRetryInterval = setInterval(() => {
+                                getUserLocation(false);
+                            }, 5000);
+                        }
+                        
+                        // Mostrar SweetAlert con instrucciones
+                        Swal.fire({
+                            title: 'Ubicación Requerida',
+                            html: `
+                                <p>Para usar ChasquiX <strong>debes habilitar la ubicación</strong>.</p>
+                                <p>Por favor:</p>
+                                <ol style="text-align: left; margin: 20px;">
+                                    <li>Abre la configuración de tu navegador</li>
+                                    <li>Habilita los permisos de ubicación</li>
+                                    <li>Recarga la página</li>
+                                </ol>
+                            `,
+                            icon: 'error',
+                            confirmButtonText: 'Entendido',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        });
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                // Geolocalización no soportada
+                Swal.fire({
+                    title: 'Navegador no compatible',
+                    text: 'Tu navegador no soporta geolocalización. Por favor usa un dispositivo más moderno.',
+                    icon: 'error',
+                    confirmButtonText: 'Entendido'
+                });
+            }
+        }
+
+        // Crear el mapa con las coordenadas iniciales
+        function createMap(lng, lat) {
             map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v12',
-                center: tingoMaria,
-                zoom: 14,
+                center: [lng, lat],
+                zoom: 16,
                 pitch: 0,
-                bearing: 0
+                bearing: 0,
+                // Asegurar que los controles respeten el safe area
+                interactive: true
             });
 
-            // Agregar controles de navegación
+            // Agregar controles de navegación con posición ajustada
             map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
+            
             // Evento para hacer clic en el mapa
             map.on('click', function (e) {
                 if (selectingDestination) {
@@ -1169,10 +1401,42 @@
                 }
             });
 
-            // Cuando el mapa esté cargado
+            // Ajustar el mapa para que respete el safe area después de cargar
             map.on('load', function() {
-                console.log('Mapa Mapbox cargado correctamente');
+                setTimeout(() => {
+                    map.resize();
+                }, 100);
             });
+        }
+
+        // Reintentar obtener ubicación
+        retryLocationBtn.addEventListener('click', function() {
+            getUserLocation(true);
+        });
+
+        // Actualizar ubicación (sin fallback)
+        function updateLocation(lat, lng) {
+            if (!lat || !lng) {
+                console.error('Ubicación inválida:', lat, lng);
+                return;
+            }
+
+            currentUser.lat = lat;
+            currentUser.lng = lng;
+
+            document.getElementById('lat').textContent = lat.toFixed(6);
+            document.getElementById('lng').textContent = lng.toFixed(6);
+
+            // Centrar mapa en la nueva ubicación
+            if (map) {
+                map.setCenter([lng, lat]);
+                map.setZoom(16);
+            }
+
+            // Agregar/actualizar marcador del usuario actual
+            addOrUpdateMarker(currentUser, currentUser.type);
+
+            updateFABs();
         }
 
         // Inicializar búsqueda de destinos
@@ -1512,74 +1776,6 @@
 
             currentRoute = null;
             document.getElementById('routeInfo').style.display = 'none';
-        }
-
-        // Inicializar MQTT
-        function initMQTT() {
-            // Configuración mejorada para WSS
-            const clientId = currentUser.id || 'webclient_' + Math.random().toString(16).substr(2, 8);
-            const path = ''; // Ruta vacía (Mosquitto no usa /mqtt)
-            const timeout = 10; // Tiempo de espera en segundos
-
-            console.log(`Intentando conexión MQTT a: wss://${MQTT_CONFIG.host}:${MQTT_CONFIG.port}${path}`);
-
-            mqttClient = new Paho.MQTT.Client(
-                MQTT_CONFIG.host,
-                MQTT_CONFIG.port,
-                path,
-                clientId
-            );
-
-            // Manejadores de eventos mejorados
-            mqttClient.onConnectionLost = function (response) {
-                console.error('Conexión MQTT perdida. Código:', response.errorCode, 'Razón:', response.errorMessage);
-                updateConnectionStatus(false);
-
-                // Reintento con backoff exponencial
-                const delay = Math.min(30000, 5000 * Math.pow(2, reconnectAttempts));
-                console.log(`Reintentando en ${delay / 1000} segundos...`);
-                setTimeout(initMQTT, delay);
-                reconnectAttempts++;
-            };
-
-            mqttClient.onMessageArrived = function (message) {
-                try {
-                    console.debug('Mensaje recibido:', message.destinationName, message.payloadString);
-                    handleMQTTMessage(message);
-                } catch (e) {
-                    console.error('Error procesando mensaje:', e);
-                }
-            };
-
-            // Opciones de conexión mejoradas
-            const connectOptions = {
-                timeout: timeout,
-                keepAliveInterval: 60,
-                cleanSession: true,
-                useSSL: true, // Obligatorio para WSS
-                onSuccess: function () {
-                    console.log('Conexión MQTT establecida con éxito');
-                    updateConnectionStatus(true);
-                    reconnectAttempts = 0;
-                    subscribeToTopics();
-                },
-                onFailure: function (error) {
-                    console.error('Error de conexión. Código:', error.errorCode, 'Error:', error.errorMessage);
-                    updateConnectionStatus(false);
-
-                    const delay = Math.min(30000, 5000 * Math.pow(2, reconnectAttempts));
-                    setTimeout(initMQTT, delay);
-                    reconnectAttempts++;
-                },
-
-            };
-
-            try {
-                mqttClient.connect(connectOptions);
-            } catch (e) {
-                console.error('Excepción al conectar:', e);
-                setTimeout(initMQTT, 5000);
-            }
         }
 
         // Variable para control de reintentos
@@ -1961,7 +2157,7 @@
         function handleMainAction() {
             if (currentUser.type === 'client') {
                 if (!currentUser.lat || !currentUser.lng) {
-                    getUserLocation();
+                    getUserLocation(true);
                 } else if (!destinationCoords) {
                     toggleFABMenu();
                 } else {
@@ -2021,47 +2217,6 @@
                 unreadMessages > 0 ? 'flex' : 'none';
             document.getElementById('unreadIndicator').textContent =
                 unreadMessages > 9 ? '9+' : unreadMessages;
-        }
-
-        // Obtener ubicación del usuario
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function (position) {
-                        updateLocation(position.coords.latitude, position.coords.longitude);
-
-                        if (currentUser.type === 'client') {
-                            showNotification('Ubicación actualizada. Ahora selecciona tu destino.', 'info');
-                            updateFABs();
-                        }
-                    },
-                    function (error) {
-                        console.error('Error obteniendo ubicación:', error);
-                        // Usar ubicación por defecto en Tingo María
-                        updateLocation(-9.2945, -76.0073);
-                    }
-                );
-            } else {
-                updateLocation(-9.2945, -76.0073);
-            }
-        }
-
-        // Actualizar ubicación
-        function updateLocation(lat, lng) {
-            currentUser.lat = lat;
-            currentUser.lng = lng;
-
-            document.getElementById('lat').textContent = lat.toFixed(6);
-            document.getElementById('lng').textContent = lng.toFixed(6);
-
-            // Centrar mapa en la nueva ubicación
-            map.setCenter([lng, lat]);
-            map.setZoom(16);
-
-            // Agregar/actualizar marcador del usuario actual
-            addOrUpdateMarker(currentUser, currentUser.type);
-
-            updateFABs();
         }
 
         // Iniciar selección de destino
@@ -2983,9 +3138,6 @@
             }, 30000); // 30 segundos
         }
 
-        // Iniciar seguimiento de ubicación al cargar
-        setTimeout(startLocationTracking, 5000);
-
         // Limpiar al cerrar la ventana
         window.addEventListener('beforeunload', function () {
             if (currentRequest) {
@@ -3000,192 +3152,191 @@
         window.clearDestination = clearDestination;
 
         // Pasos de onboarding para mobile, textos breves
-const onboardingStepsByType = {
-  client: [
-    {
-      target: '#userTypeSelect',
-      text: 'Selecciona aquí si eres <b>Cliente</b> para pedir taxi o <b>Mototaxista</b> para ofrecer servicio.',
-      align: 'bottom'
-    },
-    {
-      target: '#destinationSearch',
-      text: 'Busca tu destino o toca el mapa para seleccionarlo.',
-      align: 'bottom'
-    },
-    {
-      target: '#fabMain',
-      text: 'Usa este botón para iniciar o cancelar tu solicitud.',
-      align: 'left'
-    },
-    {
-      target: '#routeInfo',
-      text: 'Aquí verás distancia y tiempo estimado de tu viaje.',
-      align: 'bottom'
-    },
-    {
-      target: '#requestsList',
-      text: 'Aquí verás actividad y mototaxistas disponibles.',
-      align: 'bottom'
-    },
-    {
-      target: '#chatContainer',
-      text: 'Cuando tu viaje esté activo, chatea con el conductor aquí.',
-      align: 'bottom'
-    }
-  ],
-  driver: [
-    {
-      target: '#userTypeSelect',
-      text: 'Selecciona <b>Mototaxista</b> para recibir viajes.',
-      align: 'bottom'
-    },
-    {
-      target: '#fabMain',
-      text: 'Activa tu disponibilidad para empezar a recibir pedidos.',
-      align: 'left'
-    },
-    {
-      target: '#requestsList',
-      text: 'Aquí ves los clientes que solicitan taxi cerca.',
-      align: 'bottom'
-    },
-    {
-      target: '#chatContainer',
-      text: 'Cuando tomes un viaje, chatea con el cliente aquí.',
-      align: 'bottom'
-    }
-  ]
-};
+        const onboardingStepsByType = {
+          client: [
+            {
+              target: '#userTypeSelect',
+              text: 'Selecciona aquí si eres <b>Cliente</b> para pedir taxi o <b>Mototaxista</b> para ofrecer servicio.',
+              align: 'bottom'
+            },
+            {
+              target: '#destinationSearch',
+              text: 'Busca tu destino o toca el mapa para seleccionarlo.',
+              align: 'bottom'
+            },
+            {
+              target: '#fabMain',
+              text: 'Usa este botón para iniciar o cancelar tu solicitud.',
+              align: 'left'
+            },
+            {
+              target: '#routeInfo',
+              text: 'Aquí verás distancia y tiempo estimado de tu viaje.',
+              align: 'bottom'
+            },
+            {
+              target: '#requestsList',
+              text: 'Aquí verás actividad y mototaxistas disponibles.',
+              align: 'bottom'
+            },
+            {
+              target: '#chatContainer',
+              text: 'Cuando tu viaje esté activo, chatea con el conductor aquí.',
+              align: 'bottom'
+            }
+          ],
+          driver: [
+            {
+              target: '#userTypeSelect',
+              text: 'Selecciona <b>Mototaxista</b> para recibir viajes.',
+              align: 'bottom'
+            },
+            {
+              target: '#fabMain',
+              text: 'Activa tu disponibilidad para empezar a recibir pedidos.',
+              align: 'left'
+            },
+            {
+              target: '#requestsList',
+              text: 'Aquí ves los clientes que solicitan taxi cerca.',
+              align: 'bottom'
+            },
+            {
+              target: '#chatContainer',
+              text: 'Cuando tomes un viaje, chatea con el cliente aquí.',
+              align: 'bottom'
+            }
+          ]
+        };
 
-let onboardingStep = 0;
-let onboardingType = 'client';
+        let onboardingStep = 0;
+        let onboardingType = 'client';
 
-function startOnboarding(role) {
-  onboardingType = role || (document.getElementById('userTypeSelect')?.value || 'client');
-  onboardingStep = 0;
-  document.getElementById('onboardingOverlay').style.display = 'block';
-  showOnboardingStep(onboardingStep);
-  document.body.style.overflow = 'hidden';
-}
+        function startOnboarding(role) {
+          onboardingType = role || (document.getElementById('userTypeSelect')?.value || 'client');
+          onboardingStep = 0;
+          document.getElementById('onboardingOverlay').style.display = 'block';
+          showOnboardingStep(onboardingStep);
+          document.body.style.overflow = 'hidden';
+        }
 
-function showOnboardingStep(index) {
-  const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
-  if (!steps[index]) return closeOnboarding();
+        function showOnboardingStep(index) {
+          const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
+          if (!steps[index]) return closeOnboarding();
 
-  // Remove highlight
-  document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
-  // Hide arrow by default
-  document.getElementById('onboardingArrow').style.display = 'none';
+          // Remove highlight
+          document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
+          // Hide arrow by default
+          document.getElementById('onboardingArrow').style.display = 'none';
 
-  const step = steps[index];
-  const target = document.querySelector(step.target);
-  if (!target) return nextOnboardingStep(); // Si no existe, salta
+          const step = steps[index];
+          const target = document.querySelector(step.target);
+          if (!target) return nextOnboardingStep(); // Si no existe, salta
 
-  // Highlight target
-  target.classList.add('onboarding-highlight');
-  // Si el elemento está fuera del viewport, haz scroll
-  const rect = target.getBoundingClientRect();
-  const absTop = window.scrollY + rect.top;
-  if (absTop < window.scrollY || absTop + rect.height > window.scrollY + window.innerHeight) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+          // Highlight target
+          target.classList.add('onboarding-highlight');
+          // Si el elemento está fuera del viewport, haz scroll
+          const rect = target.getBoundingClientRect();
+          const absTop = window.scrollY + rect.top;
+          if (absTop < window.scrollY || absTop + rect.height > window.scrollY + window.innerHeight) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
 
-  // Tooltip
-  const tooltip = document.getElementById('onboardingTooltip');
-  let top = window.scrollY + rect.top, left = window.scrollX + rect.left;
-  let isMobile = window.innerWidth < 700;
-  let arrow = document.getElementById('onboardingArrow');
+          // Tooltip
+          const tooltip = document.getElementById('onboardingTooltip');
+          let top = window.scrollY + rect.top, left = window.scrollX + rect.left;
+          let isMobile = window.innerWidth < 700;
+          let arrow = document.getElementById('onboardingArrow');
 
-  // Colocación inteligente
-  if (isMobile) {
-    tooltip.style.left = '2vw';
-    tooltip.style.right = '2vw';
-    tooltip.style.width = '96vw';
-    tooltip.style.maxWidth = '96vw';
-  }
+          // Colocación inteligente
+          if (isMobile) {
+            tooltip.style.left = '2vw';
+            tooltip.style.right = '2vw';
+            tooltip.style.width = '96vw';
+            tooltip.style.maxWidth = '96vw';
+          }
 
-  // Según alineación
-  let arrowX = '50%', arrowY = 0;
-  if (step.align === 'bottom') {
-    top += rect.height + 18;
-    arrow.style.top = '-26px';
-    arrow.style.display = 'block';
-  } else if (step.align === 'top') {
-    top -= tooltip.offsetHeight + 26;
-    arrow.style.top = tooltip.offsetHeight + 'px';
-    arrow.style.display = 'block';
-  } else if (step.align === 'right') {
-    left += rect.width + 10;
-    arrow.style.display = 'none';
-  } else if (step.align === 'left') {
-    left -= (isMobile ? 0 : 340);
-    arrow.style.display = 'none';
-  }
+          // Según alineación
+          let arrowX = '50%', arrowY = 0;
+          if (step.align === 'bottom') {
+            top += rect.height + 18;
+            arrow.style.top = '-26px';
+            arrow.style.display = 'block';
+          } else if (step.align === 'top') {
+            top -= tooltip.offsetHeight + 26;
+            arrow.style.top = tooltip.offsetHeight + 'px';
+            arrow.style.display = 'block';
+          } else if (step.align === 'right') {
+            left += rect.width + 10;
+            arrow.style.display = 'none';
+          } else if (step.align === 'left') {
+            left -= (isMobile ? 0 : 340);
+            arrow.style.display = 'none';
+          }
 
-  // Centrado si fuera de la vista
-  if (top + tooltip.offsetHeight > window.scrollY + window.innerHeight - 40) {
-    top = window.scrollY + window.innerHeight - tooltip.offsetHeight - 24;
-    arrow.style.display = 'none';
-  }
-  if (top < window.scrollY + 10) {
-    top = window.scrollY + 20;
-    arrow.style.display = 'none';
-  }
-  if (left < 10) left = 10;
+          // Centrado si fuera de la vista
+          if (top + tooltip.offsetHeight > window.scrollY + window.innerHeight - 40) {
+            top = window.scrollY + window.innerHeight - tooltip.offsetHeight - 24;
+            arrow.style.display = 'none';
+          }
+          if (top < window.scrollY + 10) {
+            top = window.scrollY + 20;
+            arrow.style.display = 'none';
+          }
+          if (left < 10) left = 10;
 
-  tooltip.style.top = `${top}px`;
-  tooltip.style.left = `${left}px`;
-  tooltip.querySelector('#onboardingStepContent').innerHTML = step.text;
+          tooltip.style.top = `${top}px`;
+          tooltip.style.left = `${left}px`;
+          tooltip.querySelector('#onboardingStepContent').innerHTML = step.text;
 
-  // Muestra la flecha solo si está debajo
-  if (step.align === 'bottom' && !isMobile) {
-    arrow.style.display = 'block';
-    arrow.style.top = '-26px';
-  } else {
-    arrow.style.display = 'none';
-  }
+          // Muestra la flecha solo si está debajo
+          if (step.align === 'bottom' && !isMobile) {
+            arrow.style.display = 'block';
+            arrow.style.top = '-26px';
+          } else {
+            arrow.style.display = 'none';
+          }
 
-  // Botones prev/sig
-  document.getElementById('onboardingPrevBtn').style.display = (index > 0) ? 'inline-block' : 'none';
-  document.getElementById('onboardingNextBtn').textContent = (index === steps.length - 1) ? 'Finalizar' : 'Siguiente';
+          // Botones prev/sig
+          document.getElementById('onboardingPrevBtn').style.display = (index > 0) ? 'inline-block' : 'none';
+          document.getElementById('onboardingNextBtn').textContent = (index === steps.length - 1) ? 'Finalizar' : 'Siguiente';
 
-  onboardingStep = index;
-}
+          onboardingStep = index;
+        }
 
-function nextOnboardingStep() {
-  const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
-  if (onboardingStep + 1 < steps.length) {
-    showOnboardingStep(onboardingStep + 1);
-  } else {
-    closeOnboarding();
-  }
-}
+        function nextOnboardingStep() {
+          const steps = onboardingStepsByType[onboardingType] || onboardingStepsByType.client;
+          if (onboardingStep + 1 < steps.length) {
+            showOnboardingStep(onboardingStep + 1);
+          } else {
+            closeOnboarding();
+          }
+        }
 
-function prevOnboardingStep() {
-  if (onboardingStep > 0) showOnboardingStep(onboardingStep - 1);
-}
+        function prevOnboardingStep() {
+          if (onboardingStep > 0) showOnboardingStep(onboardingStep - 1);
+        }
 
-function closeOnboarding() {
-  document.getElementById('onboardingOverlay').style.display = 'none';
-  document.body.style.overflow = '';
-  document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
-  localStorage.setItem('chasquix_onboarded', 'yes');
-}
+        function closeOnboarding() {
+          document.getElementById('onboardingOverlay').style.display = 'none';
+          document.body.style.overflow = '';
+          document.querySelectorAll('.onboarding-highlight').forEach(el => el.classList.remove('onboarding-highlight'));
+          localStorage.setItem('chasquix_onboarded', 'yes');
+        }
 
-// Cambia el onboarding si cambia de rol
-document.getElementById('userTypeSelect').addEventListener('change', function() {
-  if (localStorage.getItem('chasquix_onboarded') !== 'yes') {
-    setTimeout(() => startOnboarding(this.value), 200);
-  }
-});
+        // Cambia el onboarding si cambia de rol
+        document.getElementById('userTypeSelect').addEventListener('change', function() {
+          if (localStorage.getItem('chasquix_onboarded') !== 'yes') {
+            setTimeout(() => startOnboarding(this.value), 200);
+          }
+        });
 
-// Solo la primera vez
-window.addEventListener('DOMContentLoaded', () => {
-  if (!localStorage.getItem('chasquix_onboarded')) {
-    setTimeout(() => startOnboarding(document.getElementById('userTypeSelect')?.value), 1200);
-  }
-});
-
+        // Solo la primera vez
+        window.addEventListener('DOMContentLoaded', () => {
+          if (!localStorage.getItem('chasquix_onboarded')) {
+            setTimeout(() => startOnboarding(document.getElementById('userTypeSelect')?.value), 1200);
+          }
+        });
     </script>
 </body>
 
